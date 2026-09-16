@@ -57,6 +57,14 @@ export function constructTelegramWebSocketUrl(_dcId: DcId, connectionType: Conne
   const dcId = assertValidDcId(_dcId);
   const suffix = getTelegramConnectionSuffix(connectionType);
   const path = connectionType !== 'client' ? 'apiws' + TEST_SUFFIX + (premium ? PREMIUM_SUFFIX : '') : ('apiws' + TEST_SUFFIX);
+
+  // Self-hosted server override (e.g. gramsrv): every DC and connection type
+  // maps to the same single MTProto endpoint.
+  const customServer = import.meta.env.VITE_MTPROTO_WS_URL;
+  if(customServer) {
+    return customServer.replace(/\/+$/, '') + '/' + path;
+  }
+
   const chosenServer = `wss://${App.suffix.toLowerCase()}ws${dcId}${suffix}.web.telegram.org/${path}`;
 
   return chosenServer;

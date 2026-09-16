@@ -83,6 +83,14 @@ export class RSAKeysManager {
     if(Modes.test) {
       this.publisKeysHex = this.testPublicKeysHex;
     }
+
+    const customModulus = import.meta.env.VITE_MTPROTO_RSA_MODULUS;
+    if(customModulus) {
+      this.publisKeysHex.push({
+        modulus: customModulus,
+        exponent: import.meta.env.VITE_MTPROTO_RSA_EXPONENT || '010001'
+      });
+    }
   }
 
   public prepare(): Promise<void> {
